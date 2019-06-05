@@ -1,0 +1,41 @@
+{
+  "summary" : "Integrates the Boxicons library",
+  "languages" : [ "en" ],
+  "author" : "Binyamin Green",
+  "name" : "BoxIcons",
+  "host" : {
+    "app" : "XD",
+    "minVersion" : "13.0"
+  },
+  "description" : "Description of your plugin.",
+  "helpUrl" : "https://b3u.herokuapp.com/#contact",
+  "id" : "b5440deb",
+  "icons" : [ {
+    "path" : "images/icon@1x.png",
+    "width" : 24,
+    "height" : 24
+  }, {
+    "path" : "images/icon@2x.png",
+    "width" : 48,
+    "height" : 48
+  }, {
+    "path" : "images/icon@3x.png",
+    "width" : 96,
+    "height" : 96
+  }, {
+    "path" : "images/icon@4x.png",
+    "width" : 144,
+    "height" : 144
+  }, {
+    "path" : "images/icon@5x.png",
+    "width" : 192,
+    "height" : 192
+  } ],
+  "uiEntryPoints" : [ {
+    "label" : "Boxicons",
+    "type" : "menu",
+    "commandId" : "chooseIcon",
+    "shortcut": { "mac": "Cmd+Shift+B", "win": "Ctrl+Shift+B" }
+  } ],
+  "version" : "0.0.1"
+}
