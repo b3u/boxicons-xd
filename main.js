@@ -16,6 +16,15 @@ function init() {
                 flex-direction: row;
             }
 
+            .search-btn-cont {
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .type-input-cont {
+                display: flex;
+            }
+
             .icon {
                 border-radius: 4px;
                 width: 24px;
@@ -30,13 +39,23 @@ function init() {
             </h1>
             <hr />
             <p>Search for icons from the boxicon collection.</p>
+            <label class="type-input-cont">
+                <span>Icon Type</span>
+                <select id="type">
+                    <option selected value="regular">Regular</option>
+                    <option value="solid">Solid</option>
+                    <option value="logos">Logos</option>
+                </select>
+            </label>
             <label>
                 <span>Search Icons</span>
                 <input type="text" id="searchInput" placeholder="Search..."/>
             </label>
-            <button id="searchBtn" uxp-variant="action">
-                <img src="images/search@1x.png" />
-            </button>
+            <div class="search-btn-cont">
+                <button id="searchBtn" uxp-variant="action">
+                    <img src="images/search@1x.png" />
+                </button>
+            </div>
             <label>
                 <span>Choose an Icon</span>
                 <select id="dropdown">
@@ -63,26 +82,22 @@ async function handleSearch(term, type) {
 
 async function handler() {
     let UI = document.getElementById('dialog')
-    var svg;
+
+    // Clear form
+    document.getElementById('searchInput').value = ""
+    document.getElementById('dropdown').innerHTML = "<option selected value='none'>Choose an icon</option>"
 
     document.getElementById('searchBtn').addEventListener('click', async ev => {
         // Search for icons
-        let fileList = await handleSearch(document.getElementById('searchInput').value);
+        let fileList = await handleSearch(document.getElementById('searchInput').value, document.getElementById('type').value);
 
         // Display search results
-        let fileNames = fileList.map(n => n.replace('.svg', ''))
-        try{
-            fileNames.forEach((name, i) => {
-                let option = document.createElement('option');
-                option.innerText = name;
-                option.value = fileList[i].name;
-                // console.log(option)
-                document.getElementById('dropdown').appendChild(option);
-            })
-        }
-        catch(err){console.error(err)}
-
-        svg = fileList.filter(n => n === document.getElementById('dropdown').value)[0]
+        fileList.forEach((name, i) => {
+            let option = document.createElement('option');
+            option.innerHTML = name.replace('.svg', '');
+            option.value = name;
+            document.getElementById('dropdown').appendChild(option);
+        })
     })
 
     document.getElementById('cancelBtn').addEventListener('click', () => {
@@ -101,10 +116,24 @@ async function handler() {
 
     let response = await UI.showModal()
     if(response === 'ok') {
-        if(!svg) return console.log('Too quick!');
+        let fileName = document.getElementById('dropdown').value;
+        if(fileName === 'none') return console.log('No icon choice detected.');
 
-        // const contents = await svg.read();
-        clipboard.copyText(svg);
+        const iconType = document.getElementById('type').value;
+
+        const pluginFolder = await fs.getPluginFolder();
+        const pluginEntries = await pluginFolder.getEntries();
+
+        const iconFolder = await pluginEntries.filter(f => f.name === 'boxicons@2.0.2')[0]
+        const iconEntries = await iconFolder.getEntries();
+
+        const typeFolder = await iconEntries.filter(f => f.name === iconType)[0]
+        const typeEntries = await typeFolder.getEntries()
+
+        const aFile = await typeEntries.filter(f => f.name === fileName)[0];
+
+        const contents = await aFile.read();
+        clipboard.copyText(contents);
     }
 }
 

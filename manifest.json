@@ -2,12 +2,12 @@
   "summary" : "Integrates the Boxicons library",
   "languages" : [ "en" ],
   "author" : "Binyamin Green",
-  "name" : "BoxIcons",
+  "name" : "Boxicons",
   "host" : {
     "app" : "XD",
     "minVersion" : "13.0"
   },
-  "description" : "Description of your plugin.",
+  "description" : "Integrates the Boxicons library into XD",
   "helpUrl" : "https://b3u.herokuapp.com/#contact",
   "id" : "b5440deb",
   "icons" : [ {
@@ -37,5 +37,5 @@
     "commandId" : "chooseIcon",
     "shortcut": { "mac": "Cmd+Shift+B", "win": "Ctrl+Shift+B" }
   } ],
-  "version" : "0.0.1"
+  "version" : "0.1.0"
 }
