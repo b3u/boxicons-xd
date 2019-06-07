@@ -1,6 +1,9 @@
 # Boxicons-XD
-*An icon plugin for [Adobe XD](https://www.adobe.com/products/xd.html*
+
+*An icon plugin for [Adobe XD](https://www.adobe.com/products/xd.html)*
+
 [Download](https://github.com/b3u/boxicons-xd/releases/download/v0.2.0/installer.xdx) and double click to install
+
 ---
 ## Adding Icons
 For size reasons, the svg files are not included in the repo. Please open an issue for a new icon or icons
