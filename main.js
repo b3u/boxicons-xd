@@ -15,32 +15,30 @@ function init() {
                 display: flex;
                 flex-direction: row;
             }
-
-            .search-btn-cont {
-                display: flex;
-                justify-content: flex-end;
-            }
-
             .type-input-cont {
                 display: flex;
             }
-
             .icon {
                 border-radius: 4px;
                 width: 24px;
                 height: 24px;
                 overflow: hidden;
             }
+            .label {display: flex}
+            .bold {font-weight: bold}
         </style>
         <form id="iconDialog" method="dialog">
             <h1 class="h1">
-                <span>Search Icons</span>
+                <span>Boxicons</span>
                 <img class="icon" src="./images/icon@5x.png" />
             </h1>
             <hr />
             <p>Search for icons from the boxicon collection.</p>
             <label class="type-input-cont">
-                <span>Icon Type</span>
+                <div class="label">
+                    <span class="bold">Step One:</span>
+                    <span>Choose an icon type</span>
+                </div>
                 <select id="type">
                     <option selected value="regular">Regular</option>
                     <option value="solid">Solid</option>
@@ -48,16 +46,17 @@ function init() {
                 </select>
             </label>
             <label>
-                <span>Search Icons</span>
+                <div class="label">
+                    <span class="bold">Step Two:</span>
+                    <span>Search icons</span>
+                </div>
                 <input type="text" id="searchInput" placeholder="Search..."/>
             </label>
-            <div class="search-btn-cont">
-                <button id="searchBtn" uxp-variant="action">
-                    <img src="images/search@1x.png" />
-                </button>
-            </div>
             <label>
-                <span>Choose an Icon</span>
+                <div class="label">
+                    <span class="bold">Step Three:</span>
+                    <span>Choose an Icon</span>
+                </div>
                 <select id="dropdown">
                     <option selected value="none">Choose an icon</option>
                 </select>
@@ -72,33 +71,43 @@ function init() {
 }
 
 
-async function handleSearch(term, type) {
+async function getSearchResults(term, type) {
     let iconList = require('./boxicons.json')
 
-    let filteredList = iconList[type || 'regular'].filter(name => name.includes(term))
+    let filteredList = iconList[type || 'regular']
+    if(term !== "") filteredList = filteredList.filter(name => name.includes(term))
         
-    return new Promise((resolve, reject) => filteredList ? resolve(filteredList) : reject("Uh Oh! Promise on main.js line 66 was rejected"))
+    return new Promise((resolve, reject) => filteredList ? resolve(filteredList) : reject("Uh Oh! Promise on main.js in `getSearchResults()` was rejected"))
+}
+
+function clearForm() {
+    // Clear form
+    document.getElementById('searchInput').value = ""
+    document.getElementById('dropdown').innerHTML = "<option selected value='none'>Choose an icon</option>"
+}
+
+async function handleSearch() {
+    document.getElementById('dropdown').innerHTML = "<option selected value='none'>Choose an icon</option>"
+
+    // Search for icons
+    let fileList = await getSearchResults(document.getElementById('searchInput').value, document.getElementById('type').value);
+
+    // Display search results
+    fileList.forEach(name => {
+        let option = document.createElement('option');
+        option.innerHTML = name.replace('.svg', '');
+        option.value = name;
+        document.getElementById('dropdown').appendChild(option);
+    })
 }
 
 async function handler() {
     let UI = document.getElementById('dialog')
+    clearForm()
+    handleSearch()
 
-    // Clear form
-    document.getElementById('searchInput').value = ""
-    document.getElementById('dropdown').innerHTML = "<option selected value='none'>Choose an icon</option>"
-
-    document.getElementById('searchBtn').addEventListener('click', async ev => {
-        // Search for icons
-        let fileList = await handleSearch(document.getElementById('searchInput').value, document.getElementById('type').value);
-
-        // Display search results
-        fileList.forEach((name, i) => {
-            let option = document.createElement('option');
-            option.innerHTML = name.replace('.svg', '');
-            option.value = name;
-            document.getElementById('dropdown').appendChild(option);
-        })
-    })
+    document.getElementById('searchInput').addEventListener('input', handleSearch)
+    document.getElementById('type').addEventListener('change', handleSearch)
 
     document.getElementById('cancelBtn').addEventListener('click', () => {
         UI.close('reasonCanceled')
